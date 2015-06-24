@@ -1,4 +1,4 @@
-﻿-- ------------------------------------------- --
+-- ------------------------------------------- --
 --   Deadly Boss Mods - Chinese localization   --
 --    by Diablohu<白银之手> @ 二区-轻风之语    --
 --              www.dreamgen.cn                --
@@ -98,7 +98,7 @@ if (GetLocale() == "zhCN") then
 	DBM_LURKER_OPTION_WHIRLSOON			= "显示“旋风 - 即将施放”警报（由于旋风技能的施法间隔有波动，故该警报不是相当准确）";
 	DBM_LURKER_OPTION_SPOUT				= "警报喷涌";
 
-	DBM_LURKER_EMOTE_SPOUT				= "%s深深吸了一口气！";
+	DBM_LURKER_EMOTE_SPOUT				= "%s深深吸了一口气.";
 	DBM_LURKER_CAST_SPOUT				= "鱼斯拉的喷涌";
 	DBM_LURKER_CAST_WHIRL				= "鱼斯拉的旋风";
 	DBM_LURKER_CAST_GEYSER				= "鱼斯拉的喷泉击中([^%s]+)造成";

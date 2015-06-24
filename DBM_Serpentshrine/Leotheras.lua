@@ -1,7 +1,7 @@
 local Leotheras = DBM:NewBossMod("Leotheras", DBM_LEO_NAME, DBM_LEO_DESCRIPTION, DBM_COILFANG, DBM_SERPENT_TAB, 5);
 
-Leotheras.Version			= "1.1";
-Leotheras.Author			= "Tandanu";
+Leotheras.Version			= "1.2";
+Leotheras.Author			= "LYQ";
 Leotheras.Phase				= "normal";
 Leotheras.WhirlSpam			= 0;
 Leotheras.DemonSpam			= 0;
@@ -9,13 +9,14 @@ Leotheras.MinVersionToSync  = 2.70;
 
 Leotheras:RegisterCombat("YELL", DBM_LEO_YELL_PULL);
 
-local demonTargets = {};
+local demonTargets = {}; local lastphase = false;
 
 Leotheras:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_APPLIED"
+	"SPELL_AURA_APPLIED",
+    "PLAYER_TARGET_CHANGED"
 );
 
 Leotheras:AddOption("WhirlWarn", true, DBM_LEO_OPTION_WHIRL);
@@ -61,8 +62,7 @@ function Leotheras:OnEvent(event, arg1)
 			self:EndStatusBarTimer("Whirlwind");
 			self:EndStatusBarTimer("Next Whirlwind");
 			self:StartStatusBarTimer(60, "Normal Form", "Interface\\Icons\\INV_Weapon_ShortBlade_07");
---			self:StartStatusBarTimer(15, "Inner Demons in", "Interface\\Icons\\Spell_Shadow_ManaFeed"); -- seems to be on a random timer (but changed to a fixed timer in 2.1.0?)
---			self:ScheduleSelf(10, "DemonsSoon");
+			self:StartStatusBarTimer(25, "Inner Demons in", "Interface\\Icons\\Spell_Shadow_ManaFeed");
 
 		elseif arg1 == DBM_LEO_YELL_SHADOW then
 			self.Phase = "normal";
@@ -79,9 +79,6 @@ function Leotheras:OnEvent(event, arg1)
 			if (GetTime() - self.DemonSpam) > 5 then
 				if self.Options.DemonWarn then
 					self:Announce(DBM_LEO_WARN_DEMONS_NOW, 2);
-				end
-				if not self:GetStatusBarTimerTimeLeft("Inner Demons") then
-					self:StartStatusBarTimer(30, "Inner Demons", "Interface\\Icons\\Spell_Shadow_ManaFeed");
 				end
 			end
 		end
@@ -120,11 +117,7 @@ function Leotheras:OnEvent(event, arg1)
 	
 	elseif event == "SPELL_CAST_START" then
 		if arg1.spellId == 37676 then
-			self.DemonSpam = GetTime();
-			if self.Options.DemonWarn then
-				self:Announce(DBM_LEO_WARN_DEMONS_INC, 1);
-			end
-			self:StartStatusBarTimer(32.5, "Inner Demons", "Interface\\Icons\\Spell_Shadow_ManaFeed");
+			self:SendSync("InnerDemons");
 		end
 		
 	elseif event == "EnrageWarn" and type(arg1) == "number" then
@@ -142,6 +135,8 @@ function Leotheras:OnEvent(event, arg1)
 		if self.Options.WhirlWarn then
 			self:Announce(DBM_LEO_WARN_WHIRL_SOON_2, 2);
 		end
+    elseif event == "DemonsSoon" then
+        self:SendSync("DemonsSoon");
 	elseif event == "WarnDemons" then
 		if self.Options.WarnDemons then
 			local targetString = "";
@@ -151,6 +146,12 @@ function Leotheras:OnEvent(event, arg1)
 			self:Announce(DBM_LEO_WARN_DEMON_TARGETS:format(targetString:sub(0, -3)), 1);
 		end
 		demonTargets = {};
+    elseif event == "PLAYER_TARGET_CHANGED" then
+        if not lastphase and (UnitName("target") == DBM_LEO_NAME) then
+            if (UnitHealth("target") / UnitHealthMax("target")) <= 0.15 then
+                self:SendSync("LastPhase");
+            end
+        end
 	end
 end
 
@@ -171,6 +172,17 @@ function Leotheras:OnSync(msg)
 			self:StartStatusBarTimer(20, "Next Whirlwind", "Interface\\Icons\\Ability_Whirlwind");
 			self:ScheduleSelf(15, "WhirlWarn");
 		end
+    elseif msg == "LastPhase" then
+        self:EndStatusBarTimer("Normal Form");
+		self:EndStatusBarTimer("Demon Form");
+        lastphase = true
+    elseif msg == "DemonsSoon" then
+        if self.Options.DemonWarn then
+            self:Announce(DBM_LEO_WARN_DEMONS_INC, 1);
+		end
+    elseif msg == "InnerDemons" then
+        self.DemonSpam = GetTime();
+        self:ScheduleSelf(0.5,"DemonsSoon")
 	elseif msg:sub(0, 5) == "Demon" then
 		msg = msg:sub(6);
 		if msg then

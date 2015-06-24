@@ -1,7 +1,7 @@
 local Lurker = DBM:NewBossMod("LurkerBelow", DBM_LURKER_NAME, DBM_LURKER_DESCRIPTION, DBM_COILFANG, DBM_SERPENT_TAB, 2);
 
-Lurker.Version		= "2.2";
-Lurker.Author		= "Tandanu";
+Lurker.Version		= "2.3";
+Lurker.Author		= "LYQ";
 Lurker.MinVersionToSync = 2.7
 
 Lurker.SubmergeWarning = false; -- to prevent spam after a wipe
@@ -24,17 +24,20 @@ Lurker:RegisterEvents(
 	"CHAT_MSG_RAID_BOSS_EMOTE"
 );
 
-function Lurker:OnCombatStart(delay)
-	self:StartStatusBarTimer(90, "Submerge", "Interface\\AddOns\\DBM_API\\Textures\\CryptFiendBurrow");
-	self:ScheduleSelf(60 - delay, "SubmergeWarning", 30);
-	self:ScheduleSelf(75 - delay, "SubmergeWarning", 15);
-	self:ScheduleSelf(85 - delay, "SubmergeWarning", 5);
-	
-	self:StartStatusBarTimer(42 - delay, "Spout", "Interface\\Icons\\Spell_Frost_ChillingBlast");
-	self:ScheduleSelf(37 - delay, "SpoutWarning");
+local combatstart = 0;
 
-	self:StartStatusBarTimer(18 - delay, "Whirl", "Interface\\Icons\\Ability_Whirlwind");
-	self:ScheduleSelf(14 - delay, "WhirlWarning");
+function Lurker:OnCombatStart(delay)
+	--self:StartStatusBarTimer(165, "Submerge", "Interface\\AddOns\\DBM_API\\Textures\\CryptFiendBurrow");
+	--self:ScheduleSelf(135 - delay, "SubmergeWarning", 30);
+	--self:ScheduleSelf(150 - delay, "SubmergeWarning", 15);
+	--self:ScheduleSelf(160 - delay, "SubmergeWarning", 5);
+    self:ScheduleSelf(delay,"CombatStarted")
+	
+	--self:StartStatusBarTimer(45 - delay, "Spout", "Interface\\Icons\\Spell_Frost_ChillingBlast");
+	--self:ScheduleSelf(40 - delay, "SpoutWarning");
+
+	--self:StartStatusBarTimer(18 - delay, "Whirl", "Interface\\Icons\\Ability_Whirlwind");
+	--self:ScheduleSelf(14 - delay, "WhirlWarning");
 
 	self.SubmergeWarning = false;
 	self:ScheduleSelf(20, "CheckBack");
@@ -52,41 +55,28 @@ function Lurker:OnEvent(event, arg1)
 				self:Announce(DBM_LURKER_WARN_SPOUT, 3);
 			end
 			
-			self:ScheduleSelf(22, "NextSpout");
+			self:ScheduleSelf(23, "NextSpout");
 			self:EndStatusBarTimer("Whirl");
-			self:StartStatusBarTimer(22, "Spout", "Interface\\Icons\\Spell_Frost_ChillingBlast");
+			self:StartStatusBarTimer(23, "Spout", "Interface\\Icons\\Spell_Frost_ChillingBlast");
 			self:UnScheduleSelf("WhirlWarning");
 			self:UnScheduleSelf("SpoutWarning");
 		end
 		
+    elseif event == "CombatStarted" then
+        self:SendSync("Emerge"); -- sync 'Emerge' since ermeged lurker is phase1, following by that others should get the Submerge alert bars
+        self:SendSync("Whirl");
+        self:SendSync("Spout");
+        combatstart = GetTime()
+        
 	elseif event == "SpoutWarning" and self.Options.SpoutWarn then
 		self:Announce(DBM_LURKER_WARN_SPOUT_SOON, 2);
 		
 	elseif event == "NextSpout" then
-		self:StartStatusBarTimer(32, "Next Spout", "Interface\\Icons\\Spell_Frost_ChillingBlast");
-		self:ScheduleSelf(27, "SpoutWarning");
-		
+		self:SendSync("Spout");
 	elseif event == "Submerge" then
-		self.Submerged = true;
-		self:Announce(DBM_LURKER_WARN_SUBMERGE, 2);
-		self:UnScheduleSelf("SpoutWarning");
-		self:UnScheduleSelf("WhirlWarning");
-		self:UnScheduleSelf("NextSpout");
-		self:EndStatusBarTimer("Spout");
-		self:EndStatusBarTimer("Submerge");
-		self:EndStatusBarTimer("Whirl");
-		self:EndStatusBarTimer("Next Spout");
-		self:StartStatusBarTimer(60, "Emerge", "Interface\\AddOns\\DBM_API\\Textures\\CryptFiendUnBurrow");
-		
+		self:SendSync("Submerge");
 	elseif event == "Emerge" then
-		self.Submerged = false;
-		self:Announce(DBM_LURKER_WARN_EMERGE, 3);
-		self:StartStatusBarTimer(90, "Submerge", "Interface\\AddOns\\DBM_API\\Textures\\CryptFiendBurrow");
-		self:EndStatusBarTimer("Emerge");
-		self:ScheduleSelf(60, "SubmergeWarning", 30);
-		self:ScheduleSelf(75, "SubmergeWarning", 15);
-		self:ScheduleSelf(85, "SubmergeWarning", 5);
-		
+		self:SendSync("Emerge");
 	elseif event == "CheckBack" then
 		local foundIt;
 		for i = 1, GetNumRaidMembers() do
@@ -135,9 +125,37 @@ end
 function Lurker:OnSync(msg)
 	if msg == "Whirl" then
 		self:StartStatusBarTimer(17.5, "Whirl", "Interface\\Icons\\Ability_Whirlwind");
-		self:ScheduleSelf(13.5, "WhirlWarning");
-		if self.Options.WhirlWarn then
-			self:Announce(DBM_LURKER_WARN_WHIRL, 2);
-		end
+        self:ScheduleSelf(13.5, "WhirlWarning");
+        if GetTime() > (combatstart+5) then
+            if self.Options.WhirlWarn then
+                self:Announce(DBM_LURKER_WARN_WHIRL, 2);
+            end
+        end
+    elseif msg == "Submerge" then
+        self.Submerged = true;
+        self:Announce(DBM_LURKER_WARN_SUBMERGE, 2);
+        self:UnScheduleSelf("SpoutWarning");
+        self:UnScheduleSelf("WhirlWarning");
+        self:UnScheduleSelf("NextSpout");
+        self:EndStatusBarTimer("Spout");
+        self:EndStatusBarTimer("Submerge");
+        self:EndStatusBarTimer("Whirl");
+        self:EndStatusBarTimer("Next Spout");
+        self:StartStatusBarTimer(60, "Emerge", "Interface\\AddOns\\DBM_API\\Textures\\CryptFiendUnBurrow");
+    elseif msg == "Emerge" then
+        self.Submerged = false;
+        self:Announce(DBM_LURKER_WARN_EMERGE, 3);
+        self:StartStatusBarTimer(165, "Submerge", "Interface\\AddOns\\DBM_API\\Textures\\CryptFiendBurrow");
+        self:EndStatusBarTimer("Emerge");
+        self:ScheduleSelf(135, "SubmergeWarning", 30);
+        self:ScheduleSelf(150, "SubmergeWarning", 15);
+        self:ScheduleSelf(160, "SubmergeWarning", 5);
+        if GetTime() > (combatstart+5) then
+            self:StartStatusBarTimer(10, "Spout", "Interface\\Icons\\Spell_Frost_ChillingBlast");
+            self:ScheduleSelf(5, "SpoutWarning");
+        end
+    elseif msg == "Spout" then
+        self:StartStatusBarTimer(45, "Spout", "Interface\\Icons\\Spell_Frost_ChillingBlast");
+        self:ScheduleSelf(40, "SpoutWarning");
 	end
 end

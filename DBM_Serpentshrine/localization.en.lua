@@ -18,6 +18,10 @@ DBM_HYDROSS_YELL_PULL		= "I cannot allow you to interfere!";
 DBM_HYDROSS_YELL_NATURE		= "Aaghh, the poison...";
 DBM_HYDROSS_YELL_FROST		= "Better, much better.";
 
+DBM_HYDROSS_MARK_FROST		= "afflicted by Mark of Hydross";
+DBM_HYDROSS_MARK_NATURE		= "afflicted by Mark of Corruption";
+DBM_HYDROSS_WATER_TOMB		= "([^%s]+) (%w+) afflicted by Water Tomb%.";
+
 DBM_HYDROSS_FROST_MARK_NOW	= "*** Frost Mark #%s ***";
 DBM_HYDROSS_NATURE_MARK_NOW	= "*** Nature Mark #%s ***";
 DBM_HYDROSS_FROST_SOON		= "*** Frost Mark #%s in 5 sec ***";
@@ -49,7 +53,7 @@ DBM_TIDEWALKER_WARN_GLOBES			= "*** Watery Globules ***";
 DBM_FATHOMLORD_NAME					= "Fathom-Lord Karathress";
 DBM_FATHOMLORD_DESCRIPTION			= "Announces Spitfire Totems and Healing Wave.";
 
-DBM_FATHOMLORD_YELL_PULL			= "Guards, attention! We have visitors....";
+DBM_FATHOMLORD_YELL_PULL			= "Guards, attention! We have visitors...";
 DBM_FATHOMLORD_OPTION_TOTEM_1		= "Announce Fathom-Guard Tidalvess' Spitfire Totem";
 DBM_FATHOMLORD_OPTION_TOTEM_2		= "Announce Fathom-Lord Karathress' Spitfire Totem";
 DBM_FATHOMLORD_OPTION_HEAL			= "Announce Healing Wave";
@@ -69,7 +73,7 @@ DBM_LURKER_OPTION_WHIRL				= "Announce Whirl";
 DBM_LURKER_OPTION_WHIRLSOON			= "Show \"Whirl soon\" warning";
 DBM_LURKER_OPTION_SPOUT				= "Announce Spout";
 
-DBM_LURKER_EMOTE_SPOUT				= "%s takes a deep breath!";
+DBM_LURKER_EMOTE_SPOUT				= "%s takes a deep breath.";
 DBM_LURKER_CAST_SPOUT				= "The Lurker Below%s*'s Spout";
 DBM_LURKER_CAST_WHIRL				= "The Lurker Below%s*'s Whirl";
 DBM_LURKER_CAST_GEYSER				= "The Lurker Below%s*'s Geyser hits ([^%s]+) for";
@@ -82,7 +86,7 @@ DBM_LURKER_WARN_EMERGE				= "*** Emerged ***";
 DBM_LURKER_WARN_WHIRL				= "*** Whirl ***";
 DBM_LURKER_WARN_WHIRL_SOON			= "*** Whirl soon ***";
 
-DBM_LURKER_WARN_SUBMERGE_SOON		= "*** Submerge in %s sec ***";
+DBM_LURKER_WARN_SUBMERGE_SOON		= "*** Submerge soon ***";
 
 -- Leotheras the Blind
 DBM_LEO_NAME						= "Leotheras the Blind";
@@ -94,6 +98,10 @@ DBM_LEO_OPTION_DEMONWARN			= "Announce Inner Demons targets";
 DBM_LEO_YELL_PULL					= "Finally, my banishment ends!";
 DBM_LEO_YELL_DEMON					= "Be gone, trifling elf%.%s*I am in control now!"; -- stupid spaces...there are 2 spaces at the moment :[
 DBM_LEO_YELL_SHADOW					= "No... no! What have you done? I am the master! Do you hear me? I am... aaggh! Can't... contain him.";
+DBM_LEO_GAIN_WHIRLWIND				= "Leotheras the Blind gains Whirlwind.";
+DBM_LEO_FADE_WHIRLWIND				= "Whirlwind fades from Leotheras the Blind.";
+DBM_LEO_DEBUFF_WHISPER				= "([^%s]+) (%w+) afflicted by Insidious Whisper.";
+DBM_LEO_CAST_WHISPER				= "Leotheras the Blind begins to cast Insidious Whisper.";
 DBM_LEO_YELL_WHISPER				= "We all have our demons";
 
 DBM_LEO_WARN_ENRAGE					= "*** Enrage in %s %s ***";
@@ -125,12 +133,15 @@ DBM_VASHJ_OPTION_COREICON			= "Set icon on players with a Tainted Core";
 DBM_VASHJ_OPTION_CORESPECWARN		= "Show special warning if you receive a Tainted Core";
 
 
-DBM_VASHJ_YELL_PULL1				= "I spit on you, surface filth! ";
-DBM_VASHJ_YELL_PULL2				= "Victory to Lord Illidan! ";
-DBM_VASHJ_YELL_PULL3 				= "Death to the outsiders! Victory to Lord Illidan! ";
+DBM_VASHJ_YELL_PULL1				= "I spit on you, surface filth!";
+DBM_VASHJ_YELL_PULL2				= "Victory to Lord Illidan!";
+DBM_VASHJ_YELL_PULL3 				= "Death to the outsiders!";
 DBM_VASHJ_YELL_PULL4				= "I did not wish to low myself by engaging your kind, but you leave me little coice... ";
+DBM_VASHJ_CAST_CHARGE				= "([^%s]+) (%w+) afflicted by Static Charge%.";
 DBM_VASHJ_YELL_PHASE2				= "The time is now! Leave none standing!";
 DBM_VASHJ_ELEMENT_DIES				= "Tainted Elemental";
+DBM_VASHJ_FADE_SHIELD				= "Magic Barrier fades from Lady Vashj.";
+DBM_VASHJ_DEBUFF_CORE				= "([^%s]+) (%w+) afflicted by Paralyze%.";
 DBM_VASHJ_YELL_PHASE3				= "You may want to take cover.";
 DBM_VASHJ_LOOT						= "([^%s]+).*Hitem:(%d+)";
 

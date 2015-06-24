@@ -1,4 +1,4 @@
-﻿if (GetLocale() == "zhTW") then
+if (GetLocale() == "zhTW") then
 --Chinese Translate by Nightkiller@日落沼澤(kc10577@巴哈;Azael)
 DBM_COILFANG	= "毒蛇神殿洞穴";
 
@@ -34,8 +34,8 @@ DBM_HYDROSS_TOMB_WARN		= "*** >%s< 受到了水之墳 ***";
 DBM_SBT["Enrage"] 		= "狂怒";
 DBM_SBT["Water Tomb"] 		= "水之墳";
 DBM_SBT["Hydross"] = {
-	{"Mark of Hydross #", "冰霜印記 #"},
-	{"Mark of Corruption #", "自然印記 #"},
+		 [1] = {"Mark of Hydross #", "冰霜印記 #"},
+		 [2] = {"Mark of Corruption #", "自然印記 #"},
 }
 
 -- Morogrim Tidewalker
@@ -85,7 +85,7 @@ DBM_LURKER_OPTION_WHIRL				= "提示旋風";
 DBM_LURKER_OPTION_WHIRLSOON			= "顯示 \"即將旋風\" 警告";
 DBM_LURKER_OPTION_SPOUT				= "提示噴射";
 
-DBM_LURKER_EMOTE_SPOUT				= "%s深深的吸了一口氣!";
+DBM_LURKER_EMOTE_SPOUT				= "%s深深的吸了一口氣.";
 DBM_LURKER_CAST_SPOUT				= "海底潛伏者的噴射";
 DBM_LURKER_CAST_WHIRL				= "海底潛伏者的旋風";
 DBM_LURKER_CAST_GEYSER				= "海底潛伏者的噴泉擊中(.+)造成";
@@ -193,7 +193,7 @@ DBM_SBT["Tainted Elemental"] 		= "污染的元素";
 DBM_SBT["Naga"] 			= "盤牙精英";
 DBM_SBT["Enrage"] 			= "狂怒";
 DBM_SBT["Vashj"] = {
-	{"Static Charge: (.*)", "靜電衝鋒: %1"},
+	[1] = {"Static Charge: (.*)", "靜電衝鋒: %1"},
 };
 
 end

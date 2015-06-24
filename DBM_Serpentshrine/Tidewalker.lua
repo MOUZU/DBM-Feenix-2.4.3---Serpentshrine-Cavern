@@ -1,7 +1,7 @@
 local Tidewalker = DBM:NewBossMod("Tidewalker", DBM_TIDEWALKER_NAME, DBM_TIDEWALKER_DESCRIPTION, DBM_COILFANG, DBM_SERPENT_TAB, 3);
 
-Tidewalker.Version		= "1.0";
-Tidewalker.Author		= "Tandanu";
+Tidewalker.Version		= "1.1";
+Tidewalker.Author		= "LYQ";
 Tidewalker.GraveTargets	= {};
 Tidewalker.GraveCounter	= 0;
 Tidewalker.MinVersionToSync  = 2.51;
@@ -25,6 +25,8 @@ function Tidewalker:OnCombatStart(delay)
 	
 	self:StartStatusBarTimer(42 - delay, "Murlocs", "Interface\\Icons\\INV_Misc_MonsterHead_02");
 	self:ScheduleSelf(35 - delay, "MurlocWarn");
+    self:StartStatusBarTimer(31.5 - delay, "Watery Grave", "Interface\\Icons\\Spell_Shadow_DemonBreath");
+    self:ScheduleSelf(31.5 - delay, "NextGrave");
 end
 
 function Tidewalker:OnCombatEnd()
@@ -65,12 +67,13 @@ function Tidewalker:OnEvent(event, arg1)
 			self:StartStatusBarTimer(50, "Murlocs", "Interface\\Icons\\INV_Misc_MonsterHead_02");
 			self:UnScheduleSelf("MurlocWarn");
 			self:ScheduleSelf(45, "MurlocWarn");
-		elseif arg1 == DBM_TIDEWALKER_EMOTE_GRAVE then
-			self:StartStatusBarTimer(30, "Watery Grave", "Interface\\Icons\\Spell_Shadow_DemonBreath");
 		elseif arg1 == DBM_TIDEWALKER_EMOTE_GLOBES then
 			self:Announce(DBM_TIDEWALKER_WARN_GLOBES, 3);
 		end
 		
+    elseif event == "NextGrave" then
+        self:StartStatusBarTimer(31.5, "Watery Grave", "Interface\\Icons\\Spell_Shadow_DemonBreath");
+        self:ScheduleSelf(31.5, "NextGrave");
 	elseif event == "MurlocWarn" then
 		if self.Options.Murlocs then
 			self:Announce(DBM_TIDEWALKER_WARN_MURLOCS_SOON, 1);
@@ -80,17 +83,21 @@ end
 
 function Tidewalker:OnSync(msg)
 	if msg then
-		table.insert(self.GraveTargets, msg);
-		self.GraveCounter = self.GraveCounter + 1;
-		if self.GraveCounter == 4 then
-			if self.Options.Grave then
-				local targetString = ">"..self.GraveTargets[1].."<, >"..self.GraveTargets[2].."<, >"..self.GraveTargets[3].."< "..DBM_AND.." >"..self.GraveTargets[4].."<";
-				self:Announce(string.format(DBM_TIDEWALKER_WARN_GRAVE, targetString), 2);
-			end
-			self.GraveCounter = 0;
-			self.GraveTargets = {};
-		else
-			self:ScheduleSelf(1, "GraveCheck"); --if we miss an event...
+        if msg == "" then
+            --sync new shit here
+        else
+            table.insert(self.GraveTargets, msg);
+            self.GraveCounter = self.GraveCounter + 1;
+            if self.GraveCounter == 4 then
+                if self.Options.Grave then
+                    local targetString = ">"..self.GraveTargets[1].."<, >"..self.GraveTargets[2].."<, >"..self.GraveTargets[3].."< "..DBM_AND.." >"..self.GraveTargets[4].."<";
+                    self:Announce(string.format(DBM_TIDEWALKER_WARN_GRAVE, targetString), 2);
+                end
+                self.GraveCounter = 0;
+                self.GraveTargets = {};
+            else
+                self:ScheduleSelf(1, "GraveCheck"); --if we miss an event...
+            end
 		end
 	end
 end

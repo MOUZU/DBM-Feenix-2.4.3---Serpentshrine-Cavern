@@ -1,4 +1,4 @@
-﻿if GetLocale() == "deDE" then
+if GetLocale() == "deDE" then
 	DBM_COILFANG = "Höhle des Schlangenschreins";
 	
 	
@@ -73,7 +73,7 @@
 	DBM_LURKER_OPTION_WHIRLSOON			= "Show \"Whirl soon\" warning";
 	DBM_LURKER_OPTION_SPOUT				= "Schwall ansagen";
 	
-	DBM_LURKER_EMOTE_SPOUT				= "%s atmet tief ein!";
+	DBM_LURKER_EMOTE_SPOUT				= "%s atmet tief ein.";
 	DBM_LURKER_CAST_SPOUT				= "Das Grauen aus der Tiefes Schwall";
 	DBM_LURKER_CAST_WHIRL				= "Das Grauen aus der Tiefes Geysir";
 	DBM_LURKER_CAST_GEYSER				= "Das Grauen aus der Tiefes Wirbel trifft ([^%s]+) f";
@@ -86,7 +86,7 @@
 	DBM_LURKER_WARN_WHIRL				= "*** Wirbel ***";
 	DBM_LURKER_WARN_WHIRL_SOON			= "*** Wirbel bald ***";
 
-	DBM_LURKER_WARN_SUBMERGE_SOON		= "*** Untertauchen in %s Sek ***";
+	DBM_LURKER_WARN_SUBMERGE_SOON		= "*** Untertauchen bald ***";
 	
 	DBM_SBT["Next Spout"]				= "Nächster Schwall";
 	DBM_SBT["Spout"]					= "Schwall";

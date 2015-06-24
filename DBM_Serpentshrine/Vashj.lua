@@ -18,7 +18,7 @@ local usedIcons = {
 	[8] = false
 }
 
---Vashj:RegisterCombat("YELL", {DBM_VASHJ_YELL_PULL1, DBM_VASHJ_YELL_PULL2, DBM_VASHJ_YELL_PULL3, DBM_VASHJ_YELL_PULL4}); -- stupid yells
+--Vashj:RegisterCombat("YELL", {DBM_VASHJ_YELL_PULL1, DBM_VASHJ_YELL_PULL2, DBM_VASHJ_YELL_PULL3, DBM_VASHJ_YELL_PULL4});
 Vashj:RegisterCombat("COMBAT");
 
 Vashj:RegisterEvents(
@@ -78,12 +78,16 @@ function Vashj:OnCombatEnd()
 	if self.Options.RangeCheck then
 		DBM_Gui_DistanceFrame_Hide();
 	end
+    
+    
 end
 
 function Vashj:OnEvent(event, arg1)
 	if event == "SPELL_AURA_APPLIED" then
 		if arg1.spellId == 38132 then
 			self:SendSync("Loot"..tostring(arg1.destName))
+        elseif arg1.spellId == 38280 then -- try
+            self:SendSync("Charge"..tostring(arg1.destName))
 		end
 	elseif event == "SPELL_CAST_SUCCESS" then
 		if arg1.spellId == 38280 then
@@ -97,16 +101,18 @@ function Vashj:OnEvent(event, arg1)
 			phase = 2;
 			self:Announce(DBM_VASHJ_WARN_PHASE2, 1);
 			
-			self:StartStatusBarTimer(62, "Strider", "Interface\\Icons\\INV_Misc_Fish_13");
+			self:StartStatusBarTimer(32, "Strider", "Interface\\Icons\\INV_Misc_Fish_13");
+			self:ScheduleSelf(32, "Spawn", "Strider");
+			self:ScheduleSelf(27, "SpawnSoonWarn", "Strider");
+            
+			self:StartStatusBarTimer(26.5, "Naga", "Interface\\Icons\\INV_Misc_MonsterHead_02");
+			self:ScheduleSelf(26.5, "Spawn", "Naga");
+			self:ScheduleSelf(21.5, "SpawnSoonWarn", "Naga");
+            
 			self:StartStatusBarTimer(53, "Tainted Elemental", "Interface\\Icons\\Spell_Nature_ElementalShields");
-			self:StartStatusBarTimer(47.5, "Naga", "Interface\\Icons\\INV_Misc_MonsterHead_02");
-			
-			self:ScheduleSelf(47.5, "Spawn", "Naga");
 			self:ScheduleSelf(53, "Spawn", "Elemental");
-			self:ScheduleSelf(62, "Spawn", "Strider");
-			self:ScheduleSelf(42.5, "SpawnSoonWarn", "Naga");
 			self:ScheduleSelf(48, "SpawnSoonWarn", "Elemental");
-			self:ScheduleSelf(57, "SpawnSoonWarn", "Strider");
+            
 		elseif string.find(arg1, DBM_VASHJ_YELL_PHASE3) then
 			self:SendSync("Phase3");
 		end
@@ -143,20 +149,20 @@ function Vashj:OnEvent(event, arg1)
 			if self.Options.WarnSpawns then
 				self:Announce(DBM_VASHJ_WARN_STRIDER_NOW, 2);
 			end
-			self:ScheduleSelf(63, "Spawn", "Strider");
-			self:ScheduleSelf(57, "SpawnSoonWarn", "Strider");
-			self:StartStatusBarTimer(62, "Strider", "Interface\\Icons\\INV_Misc_Fish_13");
+			self:ScheduleSelf(60.5, "Spawn", "Strider");
+			self:ScheduleSelf(55, "SpawnSoonWarn", "Strider");
+			self:StartStatusBarTimer(60, "Strider", "Interface\\Icons\\INV_Misc_Fish_13");
 		elseif arg1 == "Naga" then
 			if self.Options.WarnSpawns then
 				self:Announce(DBM_VASHJ_WARN_NAGA_NOW, 2);
 			end
-			self:ScheduleSelf(47.5, "Spawn", "Naga");
-			self:ScheduleSelf(42.5, "SpawnSoonWarn", "Naga");
-			self:StartStatusBarTimer(47.5, "Naga", "Interface\\Icons\\INV_Misc_MonsterHead_02");
+			self:ScheduleSelf(45, "Spawn", "Naga");
+			self:ScheduleSelf(40, "SpawnSoonWarn", "Naga");
+			self:StartStatusBarTimer(45, "Naga", "Interface\\Icons\\INV_Misc_MonsterHead_02");
 		end
 	
 	elseif event == "UNIT_DIED" then
-		if args.destName == DBM_VASHJ_ELEMENT_DIES then
+		if arg1.destName == DBM_VASHJ_ELEMENT_DIES then
 			self:SendSync("ElementDies");
 		end
 
